@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Websockets</title>
+  </head>
+  <body>
+    <input type="text" placeholder="your message here" id="text">
+    <button>Send</button>
+
+    <div id="log"></div>
+    <script>
+    //Prompt the user for his/her name 
+      var name =  prompt('What is your name ?');
+
+      var sock = new WebSocket("ws://localhost:5001");
+      var log = document.getElementById('log');
+      sock.onopen = function(event){
+        //alert('Socket connected successfully');
+        setTimeout(function(){
+          sock.send(JSON.stringify({
+            type:'name',
+            data:name
+          }));
+        },1000);
+       };
+
+       sock.onmessage = function(event){
+        //console.log(event);
+        var message = JSON.parse(event.data);
+        log.innerHTML += message.name+' : '+message.data+ '<br>';
+      }
+
+      document.querySelector('button').onclick = function(){
+        var text =  document.getElementById('text').value;
+        //sock.send(text);
+        sock.send(JSON.stringify({
+          type:'message',
+          data:text
+        }));
+      }
+    </script>
+  </body>
+</html>
